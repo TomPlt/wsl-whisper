@@ -1,4 +1,11 @@
-#!/home/tom/.local/share/whisper-env/bin/python3
+#!/usr/bin/env python3
+# Re-exec under venv python if not already running inside the venv
+import sys, os as _os
+_venv = _os.path.expanduser("~/.local/share/whisper-env")
+_venv_py = _os.path.join(_venv, "bin", "python3")
+if _os.path.exists(_venv_py) and _os.path.realpath(sys.prefix) != _os.path.realpath(_venv):
+    _os.execv(_venv_py, [_venv_py] + sys.argv)
+
 """Push-to-talk speech-to-text using faster-whisper on GPU.
 
 Run in a terminal. Toggle recording with:
@@ -8,6 +15,7 @@ Run in a terminal. Toggle recording with:
 
 import argparse
 import ctypes
+import getpass
 import os
 import signal
 import subprocess
@@ -26,7 +34,7 @@ if os.path.exists(_nvidia_cublas):
     ctypes.cdll.LoadLibrary(_nvidia_cublas)
 
 SIGNAL_FILE = "/tmp/whisper-ptt-signal"
-DONE_FILE = "/mnt/c/Users/Tom/.whisper-ptt-done"
+DONE_FILE = f"/mnt/c/Users/{getpass.getuser()}/.whisper-ptt-done"
 RECORD_PATH = os.path.join(tempfile.gettempdir(), "whisper-ptt-recording.wav")
 
 

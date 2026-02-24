@@ -2,7 +2,7 @@
 #SingleInstance Force
 
 recording := false
-doneFile := "C:\Users\Tom\.whisper-ptt-done"
+doneFile := "C:\Users\" . A_UserName . "\.whisper-ptt-done"
 
 F12:: {
     global recording
