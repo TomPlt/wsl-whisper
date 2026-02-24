@@ -7,6 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Requirements: WSL2 (Debian), NVIDIA GPU with CUDA, WSLg (PulseAudio), AutoHotkey v2 on Windows.
 
 ```bash
+# System packages
+sudo apt install ffmpeg python3 python3-venv
+
 # Create venv and install dependencies
 python3 -m venv ~/.local/share/whisper-env
 ~/.local/share/whisper-env/bin/pip install faster-whisper nvidia-cublas-cu12
@@ -19,10 +22,10 @@ ln -s "$(pwd)/whisper"     ~/.local/bin/whisper
 echo "alias ptt='whisper-ptt'" >> ~/.bashrc
 ```
 
-Run `whisper-ptt` via the venv python (the shebang uses `env python3`, so either activate the venv or invoke directly):
+Run `whisper-ptt` directly — the script auto-re-execs under the venv Python if needed, no activation required:
 
 ```bash
-~/.local/share/whisper-env/bin/python3 whisper-ptt [--model base] [--language en] [--no-clipboard]
+whisper-ptt [--model base] [--language en] [--no-clipboard]
 ```
 
 On Windows: double-click `whisper-ptt.ahk` (requires AHK v2). It auto-detects the current Windows username and the WSL distro is hardcoded to `Debian` — change in the AHK script if needed.
@@ -42,7 +45,7 @@ This is a WSL2 ↔ Windows IPC system with two components:
 
 **`whisper-ptt.ahk` (AutoHotkey v2, runs on Windows)**
 - F12 creates/removes `/tmp/whisper-ptt-signal` via `wsl.exe` to signal the Python daemon
-- Polls for `C:\Users\Tom\.whisper-ptt-done` (written by Python after clipboard copy), then sends Ctrl+V to paste into the active window
+- Polls for `C:\Users\<username>\.whisper-ptt-done` (written by Python after clipboard copy), then sends Ctrl+V to paste into the active window
 
 **IPC flow:**
 ```
@@ -50,7 +53,7 @@ F12 press → AHK touches /tmp/whisper-ptt-signal
          → Python watcher fires toggle_event → starts ffmpeg recording
 F12 again → AHK removes /tmp/whisper-ptt-signal
          → Python watcher fires toggle_event → stops ffmpeg, transcribes, copies to clipboard
-         → Python writes C:\Users\Tom\.whisper-ptt-done
+         → Python writes C:\Users\<username>\.whisper-ptt-done
          → AHK polls, finds file, deletes it, sends Ctrl+V
 ```
 
