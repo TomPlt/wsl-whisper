@@ -1,0 +1,15 @@
+{
+    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+    "packages": [
+        "ffmpeg"
+    ],
+    "shell": {
+        "init_hook": [
+            "uv sync --quiet"
+        ],
+        "scripts": {
+            "ptt": "uv run python whisper-ptt",
+            "whisper": "uv run python whisper"
+        }
+    }
+}

@@ -37,7 +37,7 @@ if [ -n "$LANG_ARG" ]; then
     LANG_OPT=", language=\"$LANG_ARG\""
 fi
 
-~/.local/share/whisper-env/bin/python3 -c "
+"$(dirname "$(realpath "$0")")/.venv/bin/python3" -c "
 import ctypes, os, sys
 _cublas = os.path.join(sys.prefix, 'lib', f'python{sys.version_info.major}.{sys.version_info.minor}',
     'site-packages', 'nvidia', 'cublas', 'lib', 'libcublas.so.12')
